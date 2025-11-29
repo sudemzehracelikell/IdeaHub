@@ -1,4 +1,3 @@
-
 from django.views import View
 from django.http import JsonResponse
 from .services import CommentService
@@ -22,13 +21,13 @@ class CommentView(View):
         return JsonResponse({"id": comment.id, "text": comment.text})
 
 
-class VoteView(View):
-    service = VoteService()
+    class VoteView(View):
+        service = VoteService()
 
-    def post(self, request, idea_id):
-        idea = Idea.objects.get(id=idea_id)
-        vote = self.service.add(request.user, idea)
-        if vote:
-            total_votes = self.service.count(idea)
-            return JsonResponse({"status": "success", "total_votes": total_votes})
-        return JsonResponse({"status": "failed", "message": "Already voted"})
+        def post(self, request, idea_id):
+            idea = Idea.objects.get(id=idea_id)
+            vote = self.service.add(request.user, idea)
+            if vote:
+                total_votes = self.service.count(idea)
+                return JsonResponse({"status": "success", "total_votes": total_votes})
+            return JsonResponse({"status": "failed", "message": "Already voted"})
