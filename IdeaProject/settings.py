@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'UserApp',
-    'TeamApp'
+    'TeamApp',
+    'IdeaApp',
+    'InteractionApp'
 ]
 
 MIDDLEWARE = [
