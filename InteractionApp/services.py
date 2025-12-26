@@ -1,33 +1,28 @@
-from django.views import View
-from django.http import JsonResponse
-from .services import CommentService
-from .services import VoteService
-from .models import Idea
-import json
+from .models import Comment
+from .models import Vote
 
-class CommentView(View):
-    service = CommentService()
+class CommentService:
+    def add(self, user, idea, text):
+        # Yeni yorum ekler
+        return Comment.objects.create(user=user, idea=idea, text=text)
 
-    def get(self, request, idea_id):
-        idea = Idea.objects.get(id=idea_id)
-        comments = self.service.list(idea)
-        data = [{"id": c.id, "user": c.user.username, "text": c.text, "created_at": c.created_at} for c in comments]
-        return JsonResponse(data, safe=False)
+    def list(self, idea):
+        # Belirli bir fikre ait tüm yorumları listeler
+        return Comment.objects.filter(idea=idea).order_by('-created_at')
 
-    def post(self, request, idea_id):
-        body = json.loads(request.body)
-        idea = Idea.objects.get(id=idea_id)
-        comment = self.service.add(request.user, idea, body['text'])
-        return JsonResponse({"id": comment.id, "text": comment.text})
+    def delete(self, comment_id):
+        # Belirli bir yorumu siler
+        comment = Comment.objects.get(id=comment_id)
+        comment.delete()
+        return True
 
 
-    class VoteView(View):
-        service = VoteService()
+class VoteService:
+    def add(self, user, idea):
+        # Kullanıcı aynı fikre ikinci kez oy veremez
+        vote, created = Vote.objects.get_or_create(user=user, idea=idea)
+        return vote if created else None
 
-        def post(self, request, idea_id):
-            idea = Idea.objects.get(id=idea_id)
-            vote = self.service.add(request.user, idea)
-            if vote:
-                total_votes = self.service.count(idea)
-                return JsonResponse({"status": "success", "total_votes": total_votes})
-            return JsonResponse({"status": "failed", "message": "Already voted"})
+    def count(self, idea):
+        # Bir fikre ait toplam oy sayısı
+        return Vote.objects.filter(idea=idea).count()

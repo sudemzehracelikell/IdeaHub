@@ -51,7 +51,7 @@ class Idea(models.Model):
     CreateDate = models.DateTimeField(auto_now_add=True)
     VotesCount = models.IntegerField(default=0)
     IdeaID = models.AutoField(primary_key=True)
-    CreaterID = models.ForeignKey('UserApp.Use', on_delete=models.CASCADE)
+    CreaterID = models.ForeignKey('UserApp.User', on_delete=models.CASCADE)
     StatusID = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True)
     CategoryID = models.ForeignKey(Category, on_delete=models.CASCADE)
     TeamID = models.ForeignKey(Team, on_delete=models.CASCADE)
@@ -70,7 +70,7 @@ class Update(models.Model):
     id = models.AutoField(primary_key=True)
     state = models.CharField(max_length=100)
     description = models.TextField()
-    user = models.ForeignKey('UserApp.Use', on_delete=models.CASCADE, related_name="updates")
+    user = models.ForeignKey('UserApp.User', on_delete=models.CASCADE, related_name="updates")
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE, related_name="updates")
     created_at = models.DateTimeField(auto_now_add=True)
 
