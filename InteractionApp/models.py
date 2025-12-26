@@ -1,16 +1,13 @@
 from django.db import models
 
-from UserApp import models
-from UserApp.models import User
-from InteractionApp import models
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     text = models.TextField()
     comment_date = models.DateTimeField(auto_now_add=True)
 
-    idea = models.ForeignKey('ideas.Idea', on_delete=models.CASCADE,related_name='comments') # Hangi fikir için yorum yapıldığı
-    user = models.ForeignKey(User, on_delete=models.CASCADE)      # Yorumu yapan kullanıcı
+    idea = models.ForeignKey('IdeaApp.Idea', on_delete=models.CASCADE,related_name='comments')
+    user = models.ForeignKey('UserApp.User', on_delete=models.CASCADE)
 
 
     def __str__(self):
@@ -20,8 +17,8 @@ class Comment(models.Model):
 
 class Vote(models.Model):
     id = models.AutoField(primary_key=True)
-    idea = models.ForeignKey(Idea, on_delete=models.CASCADE, related_name="votes")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="votes")
+    idea = models.ForeignKey('IdeaApp.Idea', on_delete=models.CASCADE, related_name="votes")
+    user = models.ForeignKey('UserApp.User', on_delete=models.CASCADE, related_name="votes")
     value = models.IntegerField(default=1)
 
     def __str__(self):
